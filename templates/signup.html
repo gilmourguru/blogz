@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Register</h1>
-<form action="/register" method="post">
+<h1>Signup</h1>
+<form action="/signup" method="post">
     <div class="form-group">
-        <label for="email">Email</label>
-        <input class="form-control" name="email" type="email" value="{{ email }}">
+        <label for="username">Username</label>
+        <input class="form-control" name="username" type="text" value="{{ username }}">
     </div>
     <div class="form-group">
         <label for="password">Password</label>
@@ -16,6 +16,6 @@
         <input class="form-control" name="verify" type="password">
     </div>
 
-    <input type="submit" value="Register" class="btn btn-default">
+    <input type="submit" value="signup" class="btn btn-default">
 </form>
 {% endblock %}

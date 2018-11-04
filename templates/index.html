@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2 class="text-center">Authors</h2>
+    <hr>
+
+    {% if authors|length == 0 %}
+    <p>No authors yet...</p>
+    {% else %}
+
+        
+            {% for author in authors %}
+            <h2>
+                <a href="./blog?user={{author.id}}">{{author.username}}</a>
+            </h2>
+            <hr>
+            {% endfor %}
+       
+
+    {% endif %}
+
+{% endblock %}

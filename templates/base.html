@@ -15,10 +15,10 @@
 <body>
 
     <nav class="navbar navbar-default">
-        <a href='/' class="navbar-brand">Build-a-Blog</a>
-        {% if 'email' in session %}
+        <a href='/' class="navbar-brand">Blogz</a>
+        {% if 'username' in session %}
         <ul class="nav navbar-nav navbar-right">
-            <li class="navbar-text">{{ session['email'] }}</li>
+            <li class="navbar-text">{{ session['username'] }}</li>
             <li>
                 <form method="post" action="/logout">
                     <button class="btn btn-default navbar-btn">log out</button>

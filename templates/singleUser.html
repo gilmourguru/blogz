@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h2 class="text-center">Posts by All Authors</h2>
+    <h2 class="text-center">Posts by {{author.username}}</h2>
     <hr>
 
     {% if posts|length == 0 %}
@@ -15,7 +15,7 @@
                 <a href="./blog?id={{post.id}}">{{post.title}}</a>
                 
             </h2>
-            <small><strong>Published: </strong><em>{{post.pub_date}} </em><strong>By: </strong><a href="./blog?user={{post.owner.id}}">{{post.owner.username}}</a></small>
+            <small>Published: <em><strong>{{post.pub_date}}</em></strong></small>
             <p>{{post.body}}</p>
             <hr>
             {% endfor %}
