@@ -54,13 +54,14 @@ def login():
         if user:
             if check_pw_hash(password, user.pw_hash):
                 session['username'] = username
-                flash("Logged in", 'info')
+                msg = "Welcome back, {0}!".format(username)
+                flash(msg, 'info')
                 return redirect('/newpost')
             flash('Password for ' + username + ' is incorrect...', 'danger')
         else:
-            flash('User: [' + username + '] does not exist...', 'danger')
+            flash('User "' + username + '" does not exist...', 'danger')
 
-    return render_template('login.html')
+    return render_template('login.html', title="Login | Blogz!")
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -70,19 +71,40 @@ def signup():
         password = request.form['password']
         verify = request.form['verify']
 
-        # TODO - validate user's data
+        # validate user's data
+        if not not_empty(username):
+            flash('Please choose a username', 'danger')
+            return render_template('signup.html')
+        if len(username) < 3:
+            flash('Please enter a username of at least 3 characters...', 'danger')
+            return render_template('signup.html', username=username, title="Signup | Blogz!")
+        if not not_empty(password):
+            flash('Please enter a password', 'danger')
+            return render_template('signup.html', username=username, title="Signup | Blogz!")
+        if len(password) < 3:
+            flash('Please enter a password of at least 3 characters...', 'danger')
+            return render_template('signup.html', username=username, title="Signup | Blogz!")
+        if not not_empty(verify):
+            flash('Please re-enter password', 'danger')
+            return render_template('signup.html', username=username, title="Signup | Blogz!")
+        if password != verify:
+            flash('Password and Verify Password fields do not match...', 'danger')
+            return render_template('signup.html', username=username, title="Signup | Blogz!")
 
+        # check for existing user in database
         existing_user = User.query.filter_by(username=username).first()
         if not existing_user:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/')
+            msg = "Logged in as {0}".format(username)
+            flash(msg, 'info')
+            return redirect('/newpost')
         else:
             flash("The username <strong>{0}</strong> is already signed up...".format(username), 'danger')
 
-    return render_template('signup.html')
+    return render_template('signup.html', title="Signup | Blogz!")
 
 
 @app.route('/logout', methods=['POST'])
@@ -94,8 +116,6 @@ def logout():
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
-    #  owner = User.query.filter_by(username=session['username']).first()
-    #  posts = Blog.query.filter_by(owner=owner).all()
      authors = User.query.order_by('username').all()
      return render_template('index.html', title="Blogz!", authors=authors)
 
@@ -109,11 +129,11 @@ def newpost():
         post_body = request.form['body']
         pub_date = datetime.utcnow()
         if not not_empty(post_title):
-            flash('Please enter a title')
-            return redirect('/newpost')
+            flash('Please enter a title', 'danger')
+            return render_template('newpost.html', post_body=post_body, title="New Post | Blogz!")
         if not not_empty(post_body):
-            flash('Please enter some text in the body')
-            return redirect('/newpost')
+            flash('Please enter some text in the body', 'danger')
+            return render_template('newpost.html', post_title=post_title, title="New Post | Blogz!")
         new_post = Blog(post_title, post_body, owner, pub_date)
         db.session.add(new_post)
         db.session.commit()
@@ -123,7 +143,7 @@ def newpost():
         
 
     posts = Blog.query.filter_by(owner=owner).all()
-    return render_template('newpost.html', title="Posts!",
+    return render_template('newpost.html', title="New Post | Blogz!",
                            posts=posts)
 def not_empty(string):
     if string == '':
@@ -141,30 +161,18 @@ def blog():
         user = request.args.get('user', type=int)
         if id:
             post = Blog.query.get(id)
-            return render_template('blog.html',title=post.title, post=post)
+            owner_id = post.owner_id
+            author = User.query.get(owner_id)
+            title = post.title + ' | Blogz!'
+            return render_template('blog.html',title=title, post=post, author=author)
         if user:
             author = User.query.get(user)
             posts = Blog.query.filter_by(owner_id=user).order_by(desc('pub_date')).all()
-            return render_template('singleUser.html', title="Posts", posts=posts, author=author)
+            title = author.username + ' | Blogz!'
+            return render_template('singleUser.html', title=title, posts=posts, author=author)
     
-    
-    # if not_empty(id):
-    #     post = posts[id]
-    #     return render_template('blog.html', title=post.title, post=post)
-    
-    return render_template('posts.html', title="Posts!",
+    return render_template('posts.html', title="Posts | Blogz!",
                            posts=posts)
-
-@app.route('/delete-task', methods=['POST'])
-def delete_task():
-
-    task_id = int(request.form['task-id'])
-    task = Task.query.get(task_id)
-    task.completed = True
-    db.session.add(task)
-    db.session.commit()
-
-    return redirect('/')
 
 
 if __name__ == '__main__':

@@ -1,26 +1,19 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
+<h2 class="text-center">Posts by all Blogz! Authors</h2>
+<hr />
 
-    <h2 class="text-center">Posts by All Authors</h2>
-    <hr>
-
-    {% if posts|length == 0 %}
-    <p>No posts yet...</p>
-    {% else %}
-
-        
-            {% for post in posts %}
-            <h2>
-                <a href="./blog?id={{post.id}}">{{post.title}}</a>
-                
-            </h2>
-            <small><strong>Published: </strong><em>{{post.pub_date}} </em><strong>By: </strong><a href="./blog?user={{post.owner.id}}">{{post.owner.username}}</a></small>
-            <p>{{post.body}}</p>
-            <hr>
-            {% endfor %}
-       
-
-    {% endif %}
-
-{% endblock %}
+{% if posts|length == 0 %}
+<p>No posts yet...</p>
+{% else %} {% for post in posts %}
+<h2>
+  <a href="./blog?id={{post.id}}">{{ post.title }}</a>
+</h2>
+<small
+  ><strong>Published: </strong><em>{{ post.pub_date }} </em
+  ><span style="margin-left: 15px"><strong>By: </strong></span
+  ><a href="./blog?user={{post.owner.id}}">{{ post.owner.username }}</a></small
+>
+<p style="margin-top: 12px">{{ post.body }}</p>
+<hr />
+{% endfor %} {% endif %} {% endblock %}
