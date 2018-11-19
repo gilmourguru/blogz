@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:MyBl0gzPass@local
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y337kGcys&zP3B'
-
+7
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -58,6 +58,7 @@ def login():
                 flash(msg, 'info')
                 return redirect('/newpost')
             flash('Password for ' + username + ' is incorrect...', 'danger')
+            return render_template('login.html', title="Login | Blogz", username=username)
         else:
             flash('User "' + username + '" does not exist...', 'danger')
 
